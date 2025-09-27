@@ -21,16 +21,16 @@ export default function VotingApp() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [votes, setVotes] = useState<Vote[]>([]);
   const [streak, setStreak] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
 
   // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
@@ -73,9 +73,10 @@ export default function VotingApp() {
     // Update streak
     setStreak((prev) => prev + 1);
 
-    setTimeout(() => {
-      setCurrentIndex((prev) => prev + 1);
-    }, 100);
+    // setTimeout(() => {
+    //   setCurrentIndex((prev) => prev + 1);
+    // }, 10);
+    setCurrentIndex((prev) => prev + 1);
 
     // Add some haptic feedback on mobile
     if ("vibrate" in navigator) {
