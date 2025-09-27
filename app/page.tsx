@@ -15,22 +15,19 @@ import { useRouter } from "next/navigation";
 
 export default function VotingApp() {
   const router = useRouter();
-  const [items, setItems] = useState<VotingItem[]>(sampleItems);
+  const [items, setItems] = useState<VotingItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [user, setUser] = useState<UserProfile>(sampleUser);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [votes, setVotes] = useState<Vote[]>([]);
-  const [streak, setStreak] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true);
 
   // Simulate loading
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 1000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  useEffect(() => {
+    setItems(sampleItems);
+    setIsLoading(false);
+  }, []);
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
@@ -44,12 +41,11 @@ export default function VotingApp() {
       }
     }
 
-    // const hasVisited = localStorage.getItem("voteswipe-visited")
-    // if (!hasVisited) {
-    //   setIsHelpOpen(true)
-    //   localStorage.setItem("voteswipe-visited", "true")
-    // }
-    // setShowWelcome(!hasVisited)
+    const hasVisited = localStorage.getItem("voteswipe-visited");
+    if (!hasVisited) {
+      localStorage.setItem("voteswipe-visited", "true");
+    }
+    setShowWelcome(!hasVisited);
   }, []);
 
   // Save votes to localStorage whenever votes change
@@ -70,12 +66,6 @@ export default function VotingApp() {
       votes: [...prev.votes, newVote],
     }));
 
-    // Update streak
-    setStreak((prev) => prev + 1);
-
-    // setTimeout(() => {
-    //   setCurrentIndex((prev) => prev + 1);
-    // }, 10);
     setCurrentIndex((prev) => prev + 1);
 
     // Add some haptic feedback on mobile
@@ -99,7 +89,6 @@ export default function VotingApp() {
   const handleReset = () => {
     setCurrentIndex(0);
     setVotes([]);
-    setStreak(0);
     setUser((prev) => ({
       ...prev,
       votes: [],
