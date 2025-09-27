@@ -1,116 +1,119 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { VotingCard } from "@/components/voting-card"
-import { HelpModal } from "@/components/help-modal"
-import { KeyboardShortcuts } from "@/components/keyboard-shortcuts"
-import { LoadingSkeleton } from "@/components/loading-skeleton"
-import { sampleItems, sampleUser } from "@/lib/sample-data"
-import type { VotingItem, Vote, UserProfile } from "@/types/voting"
-import { HelpCircle, Sparkles } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { VotingCard } from "@/components/voting-card";
+import { HelpModal } from "@/components/help-modal";
+import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { sampleItems, sampleUser } from "@/lib/sample-data";
+import type { VotingItem, Vote, UserProfile } from "@/types/voting";
+import { HelpCircle, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function VotingApp() {
-  const router = useRouter()
-  const [items, setItems] = useState<VotingItem[]>(sampleItems)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [user, setUser] = useState<UserProfile>(sampleUser)
-  const [isHelpOpen, setIsHelpOpen] = useState(false)
-  const [votes, setVotes] = useState<Vote[]>([])
-  const [streak, setStreak] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
-  const [showWelcome, setShowWelcome] = useState(true)
+  const router = useRouter();
+  const [items, setItems] = useState<VotingItem[]>(sampleItems);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [user, setUser] = useState<UserProfile>(sampleUser);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [votes, setVotes] = useState<Vote[]>([]);
+  const [streak, setStreak] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   // Simulate loading
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [])
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
-    const savedVotes = localStorage.getItem("voteswipe-votes")
+    const savedVotes = localStorage.getItem("voteswipe-votes");
     if (savedVotes) {
       try {
-        const parsedVotes = JSON.parse(savedVotes)
-        setVotes(parsedVotes)
+        const parsedVotes = JSON.parse(savedVotes);
+        setVotes(parsedVotes);
       } catch (error) {
-        console.error("Failed to parse saved votes:", error)
+        console.error("Failed to parse saved votes:", error);
       }
     }
 
-    const hasVisited = localStorage.getItem("voteswipe-visited")
-    if (!hasVisited) {
-      setIsHelpOpen(true)
-      localStorage.setItem("voteswipe-visited", "true")
-    }
-    setShowWelcome(!hasVisited)
-  }, [])
+    // const hasVisited = localStorage.getItem("voteswipe-visited")
+    // if (!hasVisited) {
+    //   setIsHelpOpen(true)
+    //   localStorage.setItem("voteswipe-visited", "true")
+    // }
+    // setShowWelcome(!hasVisited)
+  }, []);
 
   // Save votes to localStorage whenever votes change
   useEffect(() => {
-    localStorage.setItem("voteswipe-votes", JSON.stringify(votes))
-  }, [votes])
+    localStorage.setItem("voteswipe-votes", JSON.stringify(votes));
+  }, [votes]);
 
   const handleVote = (itemId: string, vote: "like" | "dislike") => {
     const newVote: Vote = {
       itemId,
       vote,
       timestamp: new Date(),
-    }
+    };
 
-    setVotes((prev) => [...prev, newVote])
+    setVotes((prev) => [...prev, newVote]);
     setUser((prev) => ({
       ...prev,
       votes: [...prev.votes, newVote],
-    }))
+    }));
 
     // Update streak
-    setStreak((prev) => prev + 1)
+    setStreak((prev) => prev + 1);
 
     setTimeout(() => {
-      setCurrentIndex((prev) => prev + 1)
-    }, 100)
+      setCurrentIndex((prev) => prev + 1);
+    }, 100);
 
     // Add some haptic feedback on mobile
     if ("vibrate" in navigator) {
-      navigator.vibrate(50)
+      navigator.vibrate(50);
     }
-  }
+  };
 
   const handleLike = () => {
     if (currentItem && hasMoreItems) {
-      handleVote(currentItem.id, "like")
+      handleVote(currentItem.id, "like");
     }
-  }
+  };
 
   const handleDislike = () => {
     if (currentItem && hasMoreItems) {
-      handleVote(currentItem.id, "dislike")
+      handleVote(currentItem.id, "dislike");
     }
-  }
+  };
 
   const handleReset = () => {
-    setCurrentIndex(0)
-    setVotes([])
-    setStreak(0)
+    setCurrentIndex(0);
+    setVotes([]);
+    setStreak(0);
     setUser((prev) => ({
       ...prev,
       votes: [],
-    }))
-    localStorage.removeItem("voteswipe-votes")
-  }
+    }));
+    localStorage.removeItem("voteswipe-votes");
+  };
 
-  const likedItems = items.filter((item) => votes.some((vote) => vote.itemId === item.id && vote.vote === "like"))
+  const likedItems = items.filter((item) =>
+    votes.some((vote) => vote.itemId === item.id && vote.vote === "like")
+  );
 
-  const hasMoreItems = currentIndex < items.length
-  const currentItem = hasMoreItems ? items[currentIndex] : null
-  const nextItem = currentIndex + 1 < items.length ? items[currentIndex + 1] : null
+  const hasMoreItems = currentIndex < items.length;
+  const currentItem = hasMoreItems ? items[currentIndex] : null;
+  const nextItem =
+    currentIndex + 1 < items.length ? items[currentIndex + 1] : null;
 
   if (isLoading) {
     return (
@@ -119,7 +122,7 @@ export default function VotingApp() {
           <LoadingSkeleton />
         </main>
       </div>
-    )
+    );
   }
 
   return (
@@ -138,16 +141,16 @@ export default function VotingApp() {
             variant="ghost"
             size="sm"
             onClick={() => router.push("/profile")}
-            className="p-0 w-12 h-12 rounded-full relative bg-background/80 backdrop-blur-sm hover:bg-background/90"
+            className="p-0 w-12 h-12 rounded-full relative bg-background/80 backdrop-blur-sm hover:bg-background/90 cursor-pointer"
             title="View Profile"
           >
             <Avatar className="w-10 h-10">
-              <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+              <AvatarImage
+                src={user.avatar || "/placeholder.svg"}
+                alt={user.name}
+              />
               <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            {likedItems.length > 0 && (
-              <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 text-xs">{likedItems.length}</Badge>
-            )}
           </Button>
         </div>
       </header>
@@ -158,18 +161,30 @@ export default function VotingApp() {
           <div className="relative w-full h-full">
             {/* Next card (behind) */}
             {nextItem && (
-              <VotingCard key={nextItem.id} item={nextItem} onVote={handleVote} isActive={false} zIndex={1} />
+              <VotingCard
+                key={nextItem.id}
+                item={nextItem}
+                onVote={handleVote}
+                isActive={false}
+                zIndex={1}
+              />
             )}
 
             {/* Current card (front) */}
             {currentItem && (
-              <VotingCard key={currentItem.id} item={currentItem} onVote={handleVote} isActive={true} zIndex={2} />
+              <VotingCard
+                key={currentItem.id}
+                item={currentItem}
+                onVote={handleVote}
+                isActive={true}
+                zIndex={2}
+              />
             )}
 
             {/* Floating help hint for new users */}
             {showWelcome && currentIndex === 0 && (
-              <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-10 px-4">
-                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-bounce text-center">
+              <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-10 px-4">
+                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg text-center">
                   Swipe or use buttons to vote!
                 </div>
               </div>
@@ -181,20 +196,31 @@ export default function VotingApp() {
               <div className="text-6xl animate-bounce">🎉</div>
               <div>
                 <h2 className="text-3xl font-bold mb-2">All done!</h2>
-                <p className="text-muted-foreground text-lg">You've voted on all {items.length} items</p>
+                <p className="text-muted-foreground text-lg">
+                  You've voted on all {items.length} items
+                </p>
               </div>
 
               <div className="text-center p-6 bg-success/10 rounded-lg border border-success/20">
-                <div className="text-3xl font-bold text-success">{likedItems.length}</div>
+                <div className="text-3xl font-bold text-success">
+                  {likedItems.length}
+                </div>
                 <div className="text-sm text-success/80">Items Liked</div>
               </div>
 
               <div className="space-y-3">
-                <Button onClick={() => router.push("/profile")} className="gap-2 w-full">
+                <Button
+                  onClick={() => router.push("/profile")}
+                  className="gap-2 w-full"
+                >
                   <Sparkles className="w-4 h-4" />
                   View Your Collection
                 </Button>
-                <Button onClick={handleReset} variant="outline" className="gap-2 w-full bg-transparent">
+                <Button
+                  onClick={handleReset}
+                  variant="outline"
+                  className="gap-2 w-full bg-transparent"
+                >
                   Start Over
                 </Button>
               </div>
@@ -218,5 +244,5 @@ export default function VotingApp() {
       {/* Modals */}
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
     </div>
-  )
+  );
 }
