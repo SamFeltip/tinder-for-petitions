@@ -3,31 +3,27 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { VotingCard } from "@/components/voting-card";
 import { HelpModal } from "@/components/help-modal";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
-import { sampleItems, sampleUser } from "@/lib/sample-data";
-import type { VotingItem, Vote, UserProfile } from "@/types/voting";
+import { sampleUser } from "@/lib/sample-data";
+import type { Vote, UserProfile } from "@/types/voting";
 import { HelpCircle, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useOpenPetitions } from "@/lib/petitions/hooks";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function VotingApp() {
   const router = useRouter();
-  const [items, setItems] = useState<VotingItem[]>([]);
+  // const [items, setItems] = useState<VotingItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [user, setUser] = useState<UserProfile>(sampleUser);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [votes, setVotes] = useState<Vote[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true);
 
-  // Simulate loading
-  useEffect(() => {
-    setItems(sampleItems);
-    setIsLoading(false);
-  }, []);
+  const { data: items, isLoading } = useOpenPetitions(1);
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
@@ -55,7 +51,7 @@ export default function VotingApp() {
 
   const handleVote = (itemId: string, vote: "like" | "dislike") => {
     const newVote: Vote = {
-      itemId,
+      itemId: itemId.toString(),
       vote,
       timestamp: new Date(),
     };
@@ -96,14 +92,14 @@ export default function VotingApp() {
     localStorage.removeItem("voteswipe-votes");
   };
 
-  const likedItems = items.filter((item) =>
+  const likedItems = items?.filter((item) =>
     votes.some((vote) => vote.itemId === item.id && vote.vote === "like")
   );
 
-  const hasMoreItems = currentIndex < items.length;
-  const currentItem = hasMoreItems ? items[currentIndex] : null;
+  const hasMoreItems = currentIndex < (items?.length ?? 0);
+  const currentItem = hasMoreItems && items ? items[currentIndex] : null;
   const nextItem =
-    currentIndex + 1 < items.length ? items[currentIndex + 1] : null;
+    items && currentIndex + 1 < items.length ? items[currentIndex + 1] : null;
 
   if (isLoading) {
     return (
@@ -187,13 +183,13 @@ export default function VotingApp() {
               <div>
                 <h2 className="text-3xl font-bold mb-2">All done!</h2>
                 <p className="text-muted-foreground text-lg">
-                  You've voted on all {items.length} items
+                  You've voted on all {items?.length} items
                 </p>
               </div>
 
               <div className="text-center p-6 bg-success/10 rounded-lg border border-success/20">
                 <div className="text-3xl font-bold text-success">
-                  {likedItems.length}
+                  {likedItems?.length}
                 </div>
                 <div className="text-sm text-success/80">Items Liked</div>
               </div>

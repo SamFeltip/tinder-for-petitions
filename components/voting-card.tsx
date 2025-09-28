@@ -238,7 +238,7 @@ export function VotingCard({
             </div>
           )}
 
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 via-black/40 via-black/20 to-transparent p-6 text-white">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80  to-transparent p-6 text-white">
             <h3 className="font-bold text-xl text-balance mb-2">
               {item.title}
             </h3>
