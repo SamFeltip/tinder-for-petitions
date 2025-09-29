@@ -18,6 +18,7 @@ export default function ProfilePage() {
   // Load votes from localStorage on mount
   useEffect(() => {
     const savedVotes = localStorage.getItem("voteswipe-votes");
+    console.debug({ savedVotes });
     if (savedVotes) {
       try {
         const parsedVotes = JSON.parse(savedVotes);

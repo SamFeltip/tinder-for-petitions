@@ -12,7 +12,6 @@ import type { Vote, UserProfile } from "@/types/voting";
 import { HelpCircle, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useOpenPetitions } from "@/lib/petitions/hooks";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function VotingApp() {
   const router = useRouter();
