@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Vote, UserProfile } from "@/types/voting";
+import type { Vote, UserProfile } from "@/lib/petitions/voting";
 import { sampleItems, sampleUser } from "@/lib/sample-data";
 
 export default function ProfilePage() {

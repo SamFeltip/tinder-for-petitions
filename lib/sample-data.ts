@@ -1,4 +1,4 @@
-import type { VotingItem, UserProfile } from "@/types/voting"
+import type { VotingItem, UserProfile } from "@/lib/petitions/voting";
 
 export const sampleItems: VotingItem[] = [
   {
@@ -44,15 +44,16 @@ export const sampleItems: VotingItem[] = [
   {
     id: "6",
     title: "Culinary Excellence",
-    description: "Gourmet dining experiences that celebrate local ingredients and innovative cooking techniques.",
+    description:
+      "Gourmet dining experiences that celebrate local ingredients and innovative cooking techniques.",
     imageUrl: "/gourmet-food-culinary-art.jpg",
     category: "Food",
   },
-]
+];
 
 export const sampleUser: UserProfile = {
   id: "user-1",
   name: "Alex Chen",
   avatar: "/professional-avatar.png",
   votes: [],
-}
+};

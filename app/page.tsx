@@ -8,10 +8,10 @@ import { HelpModal } from "@/components/help-modal";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { sampleUser } from "@/lib/sample-data";
-import type { Vote, UserProfile } from "@/types/voting";
+import type { Vote, UserProfile } from "@/lib/petitions/voting";
 import { HelpCircle, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useOpenPetitions } from "@/lib/petitions/hooks";
+import { useOpenPetitions } from "@/lib/petitions/parlimentPetition/hooks";
 
 export default function VotingApp() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function VotingApp() {
   const [votes, setVotes] = useState<Vote[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
 
-  const { data: items, isLoading } = useOpenPetitions(1);
+  const { data: items, isLoading } = useOpenPetitions();
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
