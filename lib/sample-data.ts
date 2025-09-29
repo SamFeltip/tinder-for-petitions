@@ -1,4 +1,4 @@
-import type { VotingItem, UserProfile } from "@/lib/petitions/voting";
+import type { VotingItem, UserProfile } from "@/app/types/voting";
 
 export const sampleItems: VotingItem[] = [
   {

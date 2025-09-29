@@ -1,6 +1,6 @@
 // lib/petitions/LocalStoragePetitionProvider.ts
-import { VotingItem } from "@/lib/petitions/voting";
-import type { PetitionItem } from "./types";
+import { VotingItem } from "@/app/types/voting";
+import type { PetitionItem } from "@/app/types/parlimentPetitions";
 import { getPetitionItem, getOpenPetitionsPage } from "./apiProvider";
 
 const petitionItemToVotingItem = (petitionItem: PetitionItem) => ({

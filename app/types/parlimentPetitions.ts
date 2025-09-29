@@ -1,4 +1,3 @@
-// lib/petitions/types.ts
 export interface PetitionListResponse {
   links: PetitionLinks;
   data: PetitionItem[];

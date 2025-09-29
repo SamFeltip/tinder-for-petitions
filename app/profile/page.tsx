@@ -6,28 +6,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Vote, UserProfile } from "@/lib/petitions/voting";
+import type { Vote, UserProfile } from "@/app/types/voting";
 import { sampleItems, sampleUser } from "@/lib/sample-data";
+import { useVotes } from "@/lib/votings/hooks";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [user, setUser] = useState<UserProfile>(sampleUser);
-  const [votes, setVotes] = useState<Vote[]>([]);
+  const [user] = useState<UserProfile>(sampleUser);
+  const { votes } = useVotes();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  // Load votes from localStorage on mount
-  useEffect(() => {
-    const savedVotes = localStorage.getItem("voteswipe-votes");
-    console.debug({ savedVotes });
-    if (savedVotes) {
-      try {
-        const parsedVotes = JSON.parse(savedVotes);
-        setVotes(parsedVotes);
-      } catch (error) {
-        console.error("Failed to parse saved votes:", error);
-      }
-    }
-  }, []);
 
   const likedItems = sampleItems.filter((item) =>
     votes.some((vote) => vote.itemId === item.id && vote.vote === "like")

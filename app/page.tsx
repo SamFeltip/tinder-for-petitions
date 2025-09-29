@@ -8,10 +8,11 @@ import { HelpModal } from "@/components/help-modal";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { sampleUser } from "@/lib/sample-data";
-import type { Vote, UserProfile } from "@/lib/petitions/voting";
+import type { Vote, UserProfile } from "@/app/types/voting";
 import { HelpCircle, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useOpenPetitions } from "@/lib/petitions/parlimentPetition/hooks";
+import { useVotes } from "@/lib/votings/hooks";
 
 export default function VotingApp() {
   const router = useRouter();
@@ -19,23 +20,15 @@ export default function VotingApp() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [user, setUser] = useState<UserProfile>(sampleUser);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [votes, setVotes] = useState<Vote[]>([]);
+
+  const { votes, handleVote } = useVotes();
+
   const [showWelcome, setShowWelcome] = useState(true);
 
   const { data: items, isLoading } = useOpenPetitions();
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
-    const savedVotes = localStorage.getItem("voteswipe-votes");
-    if (savedVotes) {
-      try {
-        const parsedVotes = JSON.parse(savedVotes);
-        setVotes(parsedVotes);
-      } catch (error) {
-        console.error("Failed to parse saved votes:", error);
-      }
-    }
-
     const hasVisited = localStorage.getItem("voteswipe-visited");
     if (!hasVisited) {
       localStorage.setItem("voteswipe-visited", "true");
@@ -48,18 +41,8 @@ export default function VotingApp() {
     localStorage.setItem("voteswipe-votes", JSON.stringify(votes));
   }, [votes]);
 
-  const handleVote = (itemId: string, vote: "like" | "dislike") => {
-    const newVote: Vote = {
-      itemId: itemId.toString(),
-      vote,
-      timestamp: new Date(),
-    };
-
-    setVotes((prev) => [...prev, newVote]);
-    setUser((prev) => ({
-      ...prev,
-      votes: [...prev.votes, newVote],
-    }));
+  const setVote = (itemId: string, vote: "like" | "dislike") => {
+    handleVote(itemId.toString(), vote);
 
     setCurrentIndex((prev) => prev + 1);
 
@@ -71,19 +54,18 @@ export default function VotingApp() {
 
   const handleLike = () => {
     if (currentItem && hasMoreItems) {
-      handleVote(currentItem.id, "like");
+      setVote(currentItem.id, "like");
     }
   };
 
   const handleDislike = () => {
     if (currentItem && hasMoreItems) {
-      handleVote(currentItem.id, "dislike");
+      setVote(currentItem.id, "dislike");
     }
   };
 
   const handleReset = () => {
     setCurrentIndex(0);
-    setVotes([]);
     setUser((prev) => ({
       ...prev,
       votes: [],
@@ -149,7 +131,7 @@ export default function VotingApp() {
               <VotingCard
                 key={nextItem.id}
                 item={nextItem}
-                onVote={handleVote}
+                onVote={setVote}
                 isActive={false}
                 zIndex={1}
               />
@@ -160,7 +142,7 @@ export default function VotingApp() {
               <VotingCard
                 key={currentItem.id}
                 item={currentItem}
-                onVote={handleVote}
+                onVote={setVote}
                 isActive={true}
                 zIndex={2}
               />

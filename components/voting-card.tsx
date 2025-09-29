@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
-import type { VotingItem } from "@/lib/petitions/voting";
+import type { VotingItem } from "@/app/types/voting";
 import { cn } from "@/lib/utils";
 
 interface VotingCardProps {
