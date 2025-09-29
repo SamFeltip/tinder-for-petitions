@@ -16,8 +16,6 @@ import { useVotes } from "@/lib/votings/hooks";
 
 export default function VotingApp() {
   const router = useRouter();
-  // const [items, setItems] = useState<VotingItem[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [user, setUser] = useState<UserProfile>(sampleUser);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
@@ -26,6 +24,11 @@ export default function VotingApp() {
   const [showWelcome, setShowWelcome] = useState(true);
 
   const { data: items, isLoading } = useOpenPetitions();
+
+  const freshItems =
+    items?.filter(
+      (item) => votes.some((vote) => item.id == vote.itemId) == false
+    ) ?? [];
 
   // Load votes from localStorage and show welcome message
   useEffect(() => {
@@ -43,8 +46,6 @@ export default function VotingApp() {
 
   const setVote = (itemId: string, vote: "like" | "dislike") => {
     handleVote(itemId.toString(), vote);
-
-    setCurrentIndex((prev) => prev + 1);
 
     // Add some haptic feedback on mobile
     if ("vibrate" in navigator) {
@@ -65,7 +66,6 @@ export default function VotingApp() {
   };
 
   const handleReset = () => {
-    setCurrentIndex(0);
     setUser((prev) => ({
       ...prev,
       votes: [],
@@ -77,10 +77,9 @@ export default function VotingApp() {
     votes.some((vote) => vote.itemId === item.id && vote.vote === "like")
   );
 
-  const hasMoreItems = currentIndex < (items?.length ?? 0);
-  const currentItem = hasMoreItems && items ? items[currentIndex] : null;
-  const nextItem =
-    items && currentIndex + 1 < items.length ? items[currentIndex + 1] : null;
+  const hasMoreItems = freshItems.length > 0;
+  const currentItem = hasMoreItems ? freshItems[0] : null;
+  const nextItem = freshItems.length > 1 ? freshItems[1] : null;
 
   if (isLoading) {
     return (
@@ -149,7 +148,7 @@ export default function VotingApp() {
             )}
 
             {/* Floating help hint for new users */}
-            {showWelcome && currentIndex === 0 && (
+            {showWelcome && (
               <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-10 px-4">
                 <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg text-center">
                   Swipe or use buttons to vote!

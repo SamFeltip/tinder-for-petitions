@@ -25,7 +25,6 @@ export function VotingCard({
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
   const startPos = useRef({ x: 0, y: 0 });
   const animationRef = useRef<number>();
   const velocity = useRef({ x: 0, y: 0 });
@@ -139,27 +138,10 @@ export function VotingCard({
     if (isAnimating) return;
     setIsAnimating(true);
 
-    const direction = vote === "like" ? 1 : -1;
-    const finalX = direction * (window.innerWidth + 200);
-    const finalY = dragOffset.y + velocity.current.y * 300;
-    const finalRotation = direction * (15 + Math.abs(velocity.current.x) * 20);
-
-    if (cardRef.current) {
-      cardRef.current.style.transition =
-        "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease-out";
-      cardRef.current.style.transform = `translate(${finalX}px, ${finalY}px) rotate(${finalRotation}deg) scale(0.8)`;
-      cardRef.current.style.opacity = "0";
-    }
-
     setTimeout(() => {
       onVote(item.id, vote);
       setDragOffset({ x: 0, y: 0 });
       setIsAnimating(false);
-      if (cardRef.current) {
-        cardRef.current.style.transition = "";
-        cardRef.current.style.transform = "";
-        cardRef.current.style.opacity = "";
-      }
     }, 250);
   };
 
@@ -197,7 +179,6 @@ export function VotingCard({
       style={{ zIndex }}
     >
       <Card
-        ref={cardRef}
         className={cn(
           "w-80 h-[500px] cursor-grab active:cursor-grabbing transition-all duration-200 overflow-hidden select-none p-0",
           isActive && "card-enter shadow-2xl",

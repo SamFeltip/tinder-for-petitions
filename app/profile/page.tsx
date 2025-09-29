@@ -7,18 +7,23 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { Vote, UserProfile } from "@/app/types/voting";
-import { sampleItems, sampleUser } from "@/lib/sample-data";
+import { sampleUser } from "@/lib/sample-data";
 import { useVotes } from "@/lib/votings/hooks";
+import { useOpenPetitions } from "@/lib/petitions/parlimentPetition/hooks";
 
 export default function ProfilePage() {
   const router = useRouter();
   const [user] = useState<UserProfile>(sampleUser);
-  const { votes } = useVotes();
+  const { votes, isLoading: votesLoading } = useVotes();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { data: items, isLoading: petitionsLoading } = useOpenPetitions();
 
-  const likedItems = sampleItems.filter((item) =>
-    votes.some((vote) => vote.itemId === item.id && vote.vote === "like")
-  );
+  const isLoading = votesLoading || petitionsLoading;
+
+  const likedItems =
+    items?.filter((item) =>
+      votes.some((vote) => vote.itemId === item.id && vote.vote === "like")
+    ) ?? [];
 
   // Get unique categories from liked items
   const categories = Array.from(
@@ -99,16 +104,24 @@ export default function ProfilePage() {
         {/* Liked Items */}
         {filteredLikedItems.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
-            <Heart className="w-16 h-16 mx-auto mb-4 opacity-50" />
-            <h2 className="text-xl font-semibold mb-2">
-              {selectedCategory
-                ? `No ${selectedCategory.toLowerCase()} items liked yet`
-                : "No liked items yet"}
-            </h2>
-            <p className="text-sm">Start swiping to build your collection!</p>
-            <Button onClick={() => router.back()} className="mt-4">
-              Start Voting
-            </Button>
+            {isLoading ? (
+              <h2>loading...</h2>
+            ) : (
+              <>
+                <Heart className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <h2 className="text-xl font-semibold mb-2">
+                  {selectedCategory
+                    ? `No ${selectedCategory.toLowerCase()} items liked yet`
+                    : "No liked items yet"}
+                </h2>
+                <p className="text-sm">
+                  Start swiping to build your collection!
+                </p>
+                <Button onClick={() => router.back()} className="mt-4">
+                  Start Voting
+                </Button>
+              </>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
