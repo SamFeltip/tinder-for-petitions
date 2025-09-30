@@ -8,7 +8,7 @@ import { HelpModal } from "@/components/help-modal";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { sampleUser } from "@/lib/sample-data";
-import type { Vote, UserProfile } from "@/app/types/voting";
+import type { UserProfile } from "@/app/types/voting";
 import { HelpCircle, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useOpenPetitions } from "@/lib/petitions/parlimentPetition/hooks";
@@ -19,11 +19,13 @@ export default function VotingApp() {
   const [user, setUser] = useState<UserProfile>(sampleUser);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
-  const { votes, handleVote } = useVotes();
+  const { votes, isLoading: votesLoading, handleVote } = useVotes();
 
   const [showWelcome, setShowWelcome] = useState(true);
 
-  const { data: items, isLoading } = useOpenPetitions();
+  const { data: items, isLoading: petitionsLoading } = useOpenPetitions();
+
+  const isLoading = votesLoading || petitionsLoading;
 
   const freshItems =
     items?.filter(
@@ -39,13 +41,8 @@ export default function VotingApp() {
     setShowWelcome(!hasVisited);
   }, []);
 
-  // Save votes to localStorage whenever votes change
-  useEffect(() => {
-    localStorage.setItem("voteswipe-votes", JSON.stringify(votes));
-  }, [votes]);
-
   const setVote = (itemId: string, vote: "like" | "dislike") => {
-    handleVote(itemId.toString(), vote);
+    handleVote(itemId, vote);
 
     // Add some haptic feedback on mobile
     if ("vibrate" in navigator) {
@@ -63,14 +60,6 @@ export default function VotingApp() {
     if (currentItem && hasMoreItems) {
       setVote(currentItem.id, "dislike");
     }
-  };
-
-  const handleReset = () => {
-    setUser((prev) => ({
-      ...prev,
-      votes: [],
-    }));
-    localStorage.removeItem("voteswipe-votes");
   };
 
   const likedItems = items?.filter((item) =>
@@ -96,7 +85,6 @@ export default function VotingApp() {
       <KeyboardShortcuts
         onLike={handleLike}
         onDislike={handleDislike}
-        onReset={handleReset}
         onProfile={() => router.push("/profile")}
         isActive={hasMoreItems}
       />
@@ -181,13 +169,6 @@ export default function VotingApp() {
                 >
                   <Sparkles className="w-4 h-4" />
                   View Your Collection
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  className="gap-2 w-full bg-transparent"
-                >
-                  Start Over
                 </Button>
               </div>
             </div>
