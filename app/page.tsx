@@ -16,7 +16,8 @@ import { useVotes } from "@/lib/votings/hooks";
 
 export default function VotingApp() {
   const router = useRouter();
-  const [user, setUser] = useState<UserProfile>(sampleUser);
+  //
+  const [user] = useState<UserProfile>(sampleUser);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const { votes, isLoading: votesLoading, handleVote } = useVotes();

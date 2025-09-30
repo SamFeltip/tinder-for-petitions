@@ -12,6 +12,8 @@ export function useVotes() {
       getAllVotes()
         .then((votes) => {
           setVotes(votes);
+          console.log(`found ${votes.length} votes.`);
+          return votes;
         })
         .catch(console.error),
   });
@@ -26,19 +28,16 @@ export function useVotes() {
    */
   const handleVote = useCallback(
     async (itemId: string, vote: "like" | "dislike") => {
-      const newVote: Vote = {
+      addVote({
         itemId,
         vote,
         timestamp: new Date(),
-      };
-
-      try {
-        await addVote(newVote);
-        setVotes((prev) => [...prev, newVote]);
-      } catch (err) {
-        console.error("Failed to save vote:", err);
-      } finally {
-      }
+      })
+        .then((newVote) => {
+          setVotes((prev) => [...prev, newVote]);
+          return votes;
+        })
+        .catch(console.error);
     },
     []
   );

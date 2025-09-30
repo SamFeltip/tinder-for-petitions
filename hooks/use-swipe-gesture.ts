@@ -133,10 +133,6 @@ export function useSwipeGesture({
     }, 250);
   };
 
-  const handleSwipe = (vote: "like" | "dislike") => {
-    handleSwipeWithTrajectory(vote);
-  };
-
   const rotation = Math.max(-15, Math.min(15, dragOffset.x * 0.1));
   const scale = isActive
     ? Math.max(0.95, 1 - Math.abs(dragOffset.x) / 1000)
@@ -153,12 +149,13 @@ export function useSwipeGesture({
     rotation,
     scale,
     opacity,
-    handleMouseDown,
-    handleSwipe,
-    handleMouseMove,
-    handleMouseUp,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    mouseHandlers: {
+      move: handleMouseMove,
+      up: handleMouseUp,
+      down: handleMouseDown,
+      touchStart: handleTouchStart,
+      touchMove: handleTouchMove,
+      touchEnd: handleTouchEnd,
+    },
   };
 }

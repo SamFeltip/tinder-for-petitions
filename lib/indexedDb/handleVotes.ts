@@ -5,10 +5,10 @@ export const VOTES_STORE_NAME = "votes";
 
 export async function addVote(vote: Vote) {
   const db = await openDB();
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<Vote>((resolve, reject) => {
     const tx = db.transaction(VOTES_STORE_NAME, "readwrite");
     tx.objectStore(VOTES_STORE_NAME).put(vote, vote.itemId);
-    tx.oncomplete = () => resolve();
+    tx.oncomplete = () => resolve(vote);
     tx.onerror = () => reject(tx.error);
   });
 }

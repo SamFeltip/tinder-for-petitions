@@ -1,8 +1,6 @@
 "use client";
 
-import type React from "react";
-
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
@@ -31,13 +29,7 @@ export function VotingCard({
     rotation,
     scale,
     opacity,
-    handleMouseDown,
-    handleSwipe,
-    handleMouseMove,
-    handleMouseUp,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    mouseHandlers,
   } = useSwipeGesture({
     onVote: (v: "like" | "dislike") => {
       onVote(item.id, v);
@@ -48,14 +40,6 @@ export function VotingCard({
   const showSticker = isDragging && Math.abs(dragOffset.x) > 30;
   const stickerType = dragOffset.x > 0 ? "like" : "dislike";
   const stickerOpacity = Math.min(Math.abs(dragOffset.x) / 100, 1);
-
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div
@@ -73,13 +57,13 @@ export function VotingCard({
           transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${rotation}deg) scale(${scale})`,
           opacity,
         }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        onMouseDown={mouseHandlers.down}
+        onMouseMove={mouseHandlers.move}
+        onMouseUp={mouseHandlers.up}
+        onMouseLeave={mouseHandlers.up}
+        onTouchStart={mouseHandlers.touchStart}
+        onTouchMove={mouseHandlers.touchMove}
+        onTouchEnd={mouseHandlers.touchEnd}
       >
         <div className="relative h-full">
           <img
@@ -119,7 +103,7 @@ export function VotingCard({
           size="lg"
           variant="outline"
           className="rounded-full w-16 h-16 border-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all duration-200 hover:scale-110 bg-background/80 backdrop-blur-sm"
-          onClick={() => handleSwipe("dislike")}
+          onClick={() => onVote(item.id, "dislike")}
           disabled={!isActive || isAnimating}
         >
           <X className="w-7 h-7" />
@@ -128,7 +112,7 @@ export function VotingCard({
         <Button
           size="lg"
           className="rounded-full w-16 h-16 bg-success hover:bg-success/90 text-success-foreground transition-all duration-200 hover:scale-110 shadow-lg"
-          onClick={() => handleSwipe("like")}
+          onClick={() => onVote(item.id, "like")}
           disabled={!isActive || isAnimating}
         >
           <Check className="w-7 h-7" />
