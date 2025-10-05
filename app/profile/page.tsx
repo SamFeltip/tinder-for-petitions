@@ -128,7 +128,7 @@ export default function ProfilePage() {
             {filteredLikedItems.map((item) => (
               <Card
                 key={item.id}
-                className="overflow-hidden hover:shadow-lg transition-shadow"
+                className="overflow-hidden hover:shadow-lg transition-shadow px-4"
               >
                 <div className="flex">
                   <div className="w-32 h-32 flex-shrink-0 overflow-hidden">
@@ -139,7 +139,7 @@ export default function ProfilePage() {
                           : "/placeholder.svg"
                       }
                       alt={item.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                   </div>
                   <div className="flex-1 p-4 flex flex-col justify-center">
