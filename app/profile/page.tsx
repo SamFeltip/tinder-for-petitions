@@ -133,7 +133,11 @@ export default function ProfilePage() {
                 <div className="flex">
                   <div className="w-32 h-32 flex-shrink-0 overflow-hidden">
                     <img
-                      src={item.imageUrl || "/placeholder.svg"}
+                      src={
+                        process.env.NEXT_PUBLIC_IMAGE_GENERATOR_URL
+                          ? `${process.env.NEXT_PUBLIC_IMAGE_GENERATOR_URL}?id=${item.id}`
+                          : "/placeholder.svg"
+                      }
                       alt={item.title}
                       className="w-full h-full object-cover"
                     />

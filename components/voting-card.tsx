@@ -7,6 +7,7 @@ import { Check, X } from "lucide-react";
 import type { VotingItem } from "@/app/types/voting";
 import { cn } from "@/lib/utils";
 import { useSwipeGesture } from "@/hooks/use-swipe-gesture";
+import { env } from "process";
 
 interface VotingCardProps {
   item: VotingItem;
@@ -67,7 +68,11 @@ export function VotingCard({
       >
         <div className="relative h-full">
           <img
-            src={item.imageUrl || "/placeholder.svg"}
+            src={
+              process.env.NEXT_PUBLIC_IMAGE_GENERATOR_URL
+                ? `${process.env.NEXT_PUBLIC_IMAGE_GENERATOR_URL}?id=${item.id}`
+                : "/placeholder.svg"
+            }
             alt={item.title}
             className="absolute inset-0 w-full h-full object-cover"
             draggable={false}

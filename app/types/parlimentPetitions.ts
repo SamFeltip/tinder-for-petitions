@@ -1,3 +1,8 @@
+export interface PetitionItemResponse {
+  links: PetitionLinks;
+  data: PetitionItem;
+}
+
 export interface PetitionListResponse {
   links: PetitionLinks;
   data: PetitionItem[];
