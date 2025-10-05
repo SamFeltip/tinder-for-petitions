@@ -1,6 +1,6 @@
 {
-  "name": "Tinder for Petitions",
-  "short_name": "PetitionTinder",
+  "name": "Swipport",
+  "short_name": "Swipport",
   "description": "A Tinder-like app for voting on petitions.",
   "start_url": "/",
   "display": "standalone",
