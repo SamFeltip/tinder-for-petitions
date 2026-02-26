@@ -18,6 +18,8 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
+        <title>Swipport</title>
+        <meta name="description" content="Tinder for petitions" />
       </head>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <QueryClientProvider client={queryClient}>
