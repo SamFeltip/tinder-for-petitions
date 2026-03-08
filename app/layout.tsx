@@ -19,6 +19,8 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
         <title>Swipport</title>
+        <meta name="apple-mobile-web-app-title" content="Swipport" />
+        <meta property="og:title" content="Swipport" />
         <meta name="description" content="Tinder for petitions" />
       </head>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
